@@ -3,7 +3,7 @@ close all
 clear all
 
 % load data
-load ../markov_chains/TEMP_RES_1.mat Sequences output
+load ../markov_chains/TEMP_RES_2.mat Sequences output
 
 % remove zeros
 index0=find(squeeze(Sequences(:,end-1,1)),1,'first');
@@ -17,7 +17,7 @@ for i = 1:size(Sequences,2)
    end
 
 MCMCPar.n = size(Sequences,2)-2;
-titlestr = ["\theta", "m", "D", "\phi", "\rho", "\sigma", "\mu_B", "\beta_0", "\psi", "t_0", "r"];
+titlestr = ["\xi_1", "\xi_2", "t_1", "t_2"];
 
 % MARKOV CHAIN PLOT
 figure(2222)
@@ -60,3 +60,4 @@ figure(5555)
         set(gca,'fontsize',14)
         title(titlestr(i));
     end
+
