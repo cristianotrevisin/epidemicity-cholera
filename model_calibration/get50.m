@@ -31,7 +31,7 @@ function [x1,x2] = get95(opt,rSeq1, rSeq2)
 %     end
 tail2 = 25000*3;
 
-    tail1 = 1000000*3;
+tail1 = 1000000*3;
 
 
 
@@ -43,16 +43,16 @@ bestset2 = bestset2(end,:);
 
 for i = 1:size(rSeq2,2)-2
     temp = sort(rSeq2(:,i));
-    pctmin2(i)   = prctile(rSeq2(:,i), 2.5);
-    pctmax2(i)   = prctile(rSeq2(:,i), 97.5);
-    parmat2(:,i) = temp(round(tail2*0.025):round(tail2*0.975));
+    pctmin2(i)   = prctile(rSeq2(:,i), 25);
+    pctmax2(i)   = prctile(rSeq2(:,i), 75);
+    parmat2(:,i) = temp(round(tail2*0.25):round(tail2*0.75));
 end
 
 for i = 1:size(rSeq1,2)-2
     temp = sort(rSeq1(:,i));
-    pctmin1(i)   = prctile(rSeq1(:,i), 2.5);
-    pctmax1(i)   = prctile(rSeq1(:,i), 97.5);
-    parmat1(:,i) = temp(round(tail1*0.025):round(tail1*0.975));
+    pctmin1(i)   = prctile(rSeq1(:,i), 25);
+    pctmax1(i)   = prctile(rSeq1(:,i), 75);
+    parmat1(:,i) = temp(round(tail1*0.25):round(tail1*0.75));
 end
 
 

@@ -59,153 +59,7 @@ switch scenario_ocv
         ocv.eta_1d = ocv.eta_1d;
         ocv.eta_2d = ocv.eta_2d;
         
-   case 8
-        ocv.rv_1d = 2*ocv.rv_1d;
-        ocv.rv_2d = 2*ocv.rv_2d;
-        ocv.eta_1d = ocv.eta_1d;
-        ocv.eta_2d = ocv.eta_2d;
-        
-    case 9
-        load '../data/ocv.mat' datespace rv_1d rv_2d eta_1d eta_2d
-        date_diff = datenum(2016,11,08) - datenum(2011,11,01) + 1;
-        ocv.rv_1d = rv_1d(date_diff:date_diff+length(index_ocv)-1,:);
-        ocv.rv_2d = rv_2d(date_diff:date_diff+length(index_ocv)-1,:);
-        ocv.eta_1d = eta_1d(date_diff:date_diff+length(index_ocv)-1,:);
-        ocv.eta_2d = eta_2d(date_diff:date_diff+length(index_ocv)-1,:);
-        
-        
-        
-    case 4
-        ocv.rv_1d = zeros(length(time_model),10);
-        ocv.rv_2d = zeros(length(time_model),10);
-        ocv.eta_1d = zeros(length(time_model),10);
-        ocv.eta_2d = zeros(length(time_model),10);
-        
-        for i = 1:length(time_model)
-            if (time_model(i) >= datenum(2011,10,01)) && (time_model(i) <= datenum(2011,10,01)+730)
-                ocv.rv_1d(i,1) = (80/150) * 9.76e6 * POP(1)/(POP(1)+POP(2)+POP(4)) / 730;
-                ocv.rv_1d(i,2) = (80/150) * 9.76e6 * POP(2)/(POP(1)+POP(2)+POP(4)) / 730;
-                ocv.rv_1d(i,4) = (80/150) * 9.76e6 * POP(4)/(POP(1)+POP(2)+POP(4)) / 730;
-                ocv.eta_1d(i,[1 2 4]) = max(eff_1d);
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_1d(i,[1 2 4]) = interp1(eff_days, eff_1d, time_model(i)-datenum(2011,10,01) + 730, 'linear', 'extrap');
-            end
-            if (time_model(i) >= datenum(2011,10,01) + 14) && (time_model(i) <= datenum(2011,10,01)+730)
-                ocv.rv_2d(i,1) = (70/150) * 9.76e6 * POP(1)/(POP(1)+POP(2)+POP(4)) / (730-14);
-                ocv.rv_2d(i,2) = (70/150) * 9.76e6 * POP(2)/(POP(1)+POP(2)+POP(4)) / (730-14);
-                ocv.rv_2d(i,4) = (70/150) * 9.76e6 * POP(4)/(POP(1)+POP(2)+POP(4)) / (730-14);
-                ocv.eta_2d(i,[1 2 4]) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) + 14)/2, 'linear', 'extrap');
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_2d(i,[1 2 4]) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) + 14)/2, 'linear', 'extrap');
-            end
-        end
-        
-    case 3
-        ocv.rv_1d = zeros(length(time_model),10);
-        ocv.rv_2d = zeros(length(time_model),10);
-        ocv.eta_1d = zeros(length(time_model),10);
-        ocv.eta_2d = zeros(length(time_model),10);
-        
-        for i = 1:length(time_model)
-            if (time_model(i) >= datenum(2011,10,01)) && (time_model(i) <= datenum(2011,10,01)+730)
-                ocv.rv_1d(i,1) = (80/150) * 3.71e6 * POP(1)/(POP(1)+POP(2)) / 730;
-                ocv.rv_1d(i,2) = (80/150) * 3.71e6 * POP(2)/(POP(1)+POP(2)) / 730;
-                ocv.eta_1d(i,1:2) = max(eff_1d);
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_1d(i,1:2) = interp1(eff_days, eff_1d, time_model(i)-datenum(2011,10,01) - 730, 'linear', 'extrap');
-            end
-            if (time_model(i) >= datenum(2011,10,01) + 14) && (time_model(i) <= datenum(2011,10,01)+730)
-                ocv.rv_2d(i,1) = (70/150) * 3.71e6 * POP(1)/(POP(1)+POP(2)) / (730-14);
-                ocv.rv_2d(i,2) = (70/150) * 3.71e6 * POP(2)/(POP(1)+POP(2)) / (730-14);
-                ocv.eta_2d(i,1:2) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_2d(i,1:2) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-            end
-        end
-                
-    case 5
-        ocv.rv_1d = zeros(length(time_model),10);
-        ocv.rv_2d = zeros(length(time_model),10);
-        ocv.eta_1d = zeros(length(time_model),10);
-        ocv.eta_2d = zeros(length(time_model),10);
-        for i = 1:length(time_model)
-            if (time_model(i) >= datenum(2011,10,01)) && (time_model(i) <= datenum(2011,10,01)+1825)
-                for j = 1:10
-                    ocv.rv_1d(i,j) = (80/150) * 16.37e6 * POP(j)/sum(POP) / 1825;
-                    ocv.eta_1d(i,j) = max(eff_1d);
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 1825
-                ocv.eta_1d(i,:) = interp1(eff_days, eff_1d, time_model(i)-datenum(2011,10,01) - 1825, 'linear', 'extrap');
-            end
-            if (time_model(i) >= datenum(2011,10,01) + 14) && (time_model(i) <= datenum(2011,10,01)+1825)
-                for j = 1:10
-                    ocv.rv_2d(i,j) = (70/150) * 16.37e6 * POP(j)/sum(POP) / (1825-14);
-                    ocv.eta_2d(i,j) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 1825
-                ocv.eta_2d(i,:) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-            end
-        end
-        
-    case 6
-        ocv.rv_1d = zeros(length(time_model),10);
-        ocv.rv_2d = zeros(length(time_model),10);
-        ocv.eta_1d = zeros(length(time_model),10);
-        ocv.eta_2d = zeros(length(time_model),10);
-        for i = 1:length(time_model)
-            if (time_model(i) >= datenum(2011,10,01)) && (time_model(i) <= datenum(2011,10,01)+730)
-                for j = 1:10
-                    ocv.rv_1d(i,j) = (80/150) * 16.37e6 * POP(j)/sum(POP) / 730;
-                    ocv.eta_1d(i,j) = max(eff_1d);
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_1d(i,:) = interp1(eff_days, eff_1d, time_model(i)-datenum(2011,10,01) - 730, 'linear', 'extrap');
-            end
-            if (time_model(i) >= datenum(2011,10,01) + 14) && (time_model(i) <= datenum(2011,10,01)+730)
-                for j = 1:10
-                    ocv.rv_2d(i,j) = (70/150) * 16.37e6 * POP(j)/sum(POP) / (730-14);
-                    ocv.eta_2d(i,j) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_2d(i,:) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-            end
-        end
-        
-    case 7
-        ocv.rv_1d = zeros(length(time_model),10);
-        ocv.rv_2d = zeros(length(time_model),10);
-        ocv.eta_1d = zeros(length(time_model),10);
-        ocv.eta_2d = zeros(length(time_model),10);
-        for i = 1:length(time_model)
-            if (time_model(i) >= datenum(2011,10,01)) && (time_model(i) <= datenum(2011,10,01)+730)
-                for j = 1:10
-                    ocv.rv_1d(i,j) = (96.67/191.67) * 20.91e6 * POP(j)/sum(POP) / 730;
-                    ocv.eta_1d(i,j) = max(eff_1d);
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_1d(i,:) = interp1(eff_days, eff_1d, time_model(i)-datenum(2011,10,01) - 730, 'linear', 'extrap');
-            end
-            if (time_model(i) >= datenum(2011,10,01) + 14) && (time_model(i) <= datenum(2011,10,01)+730)
-                for j = 1:10
-                    ocv.rv_2d(i,j) = (95/191.67) * 20.91e6 * POP(j)/sum(POP) / (730-14);
-                    ocv.eta_2d(i,j) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-                end
-            end
-            if time_model(i) > datenum(2011,10,01) + 730
-                ocv.eta_2d(i,:) = interp1(eff_days, eff_2d, (time_model(i)-datenum(2011,10,01) - 14)/2, 'linear', 'extrap');
-            end
-        end
-        
-        case 10
+    case 10
         ocv.rv_1d = zeros(length(time_model),10);
         ocv.rv_2d = zeros(length(time_model),10);
         ocv.eta_1d = zeros(length(time_model),10);
@@ -231,7 +85,7 @@ switch scenario_ocv
             end
         end
         
-        case 11
+    case 11
         ocv.rv_1d = zeros(length(time_model),10);
         ocv.rv_2d = zeros(length(time_model),10);
         ocv.eta_1d = zeros(length(time_model),10);
@@ -257,7 +111,7 @@ switch scenario_ocv
             end
         end
         
-        case 12
+    case 12
         ocv.rv_1d = zeros(length(time_model),10);
         ocv.rv_2d = zeros(length(time_model),10);
         ocv.eta_1d = zeros(length(time_model),10);
@@ -283,7 +137,7 @@ switch scenario_ocv
             end
         end
         
-        case 13
+    case 13
         ocv.rv_1d = zeros(length(time_model),10);
         ocv.rv_2d = zeros(length(time_model),10);
         ocv.eta_1d = zeros(length(time_model),10);
@@ -309,7 +163,7 @@ switch scenario_ocv
             end
         end
         
-        case 14
+    case 14
         ocv.rv_1d = zeros(length(time_model),10);
         ocv.rv_2d = zeros(length(time_model),10);
         ocv.eta_1d = zeros(length(time_model),10);
@@ -342,15 +196,11 @@ end
     ocv.eta_1d=ocv.eta_1d';
     ocv.eta_2d=ocv.eta_2d';
 
-% SCENARIO 0 -> NO NPI
-% SCENARIO B -> WHAT ACTUALLY HAPPENED
-% SCENARIO 1 -> TWICE AS NPI
-% SCENARIO 2 -> TENFOLD AS NPI
-% SCENARIO 3 -> 1 NPI EVERY 100 CASES
-% SCENARIO 4 -> 1 NPI EVERY 50 CASES
-% SCENARIO 5 -> 1 NPI EVERY 10 CASES
-% SCENARIO 1b -> ANTICIPATED NPI
-% SCENARIO 1.5 -> 5FOLD AS NPI
+% SCENARIO 1 -> NO NPI
+% SCENARIO 2 -> WHAT ACTUALLY HAPPENED
+% SCENARIO 3 -> TWICE AS NPI
+% SCENARIO 4 -> TENFOLD AS NPI
+% SCENARIO 9  -> 5FOLD AS NPI
 
 %extract cati data
     if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 || scenario_npi == 8 || scenario_npi == 9
@@ -374,56 +224,7 @@ switch scenario_npi
         cati_sum = 10*cati_sum;
     case 9
         cati_sum = 5*cati_sum;
-    case 5
-        cati_day = zeros(length(time_model),10);
-        for k = 1:size(cases_week,2)
-            time_base = datenum(2010,10,23) + (k-1)*7;
-            datestr(time_base)
-            if time_base >= datenum(2011,10,01)
-                for dep = 1:10
-                    cati_day(3+7*(k-1),dep) = round(cases_week(dep,k-1)*0.01);
-                end
-            end
-        end
-        cati_day(isnan(cati_day)) = 0;
-        cati_sum = cumsum(cati_day,1);
-        
-    case 6
-        cati_day = zeros(length(time_model),10);
-        for k = 1:size(cases_week,2)
-            time_base = datenum(2010,10,23) + (k-1)*7;
-            datestr(time_base)
-            if time_base >= datenum(2011,10,01)
-                for dep = 1:10
-                    cati_day(3+7*(k-1),dep) = round(cases_week(dep,k-1)*0.02);
-                end
-            end
-        end
-        cati_day(isnan(cati_day)) = 0;
-        cati_sum = cumsum(cati_day,1);
-        
-    case 7
-        cati_day = zeros(length(time_model),10);
-        for k = 1:size(cases_week,2)
-            time_base = datenum(2010,10,23) + (k-1)*7;
-            datestr(time_base)
-            if time_base >= datenum(2011,10,01)
-                for dep = 1:10
-                    cati_day(3+7*(k-1),dep) = round(cases_week(dep,k-1)*0.1);
-                end
-            end
-        end
-        cati_day(isnan(cati_day)) = 0;
-        cati_sum = cumsum(cati_day,1);
-        
-    case 8
-        cati_sum2 = cati_sum;
-        cati_sum = zeros(length(time_model),10);
-        cati_sum(346:1802,:) = cati_sum2(991:end,:);
-        for i = 1803:size(cati_sum,1);
-            cati_sum(i,:) = cati_sum(1802,:);
-        end
-        
+    
 end
 end
 
