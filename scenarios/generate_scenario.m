@@ -222,6 +222,12 @@ switch scenario_npi
         cati_sum = 2*cati_sum;
     case 4
         cati_sum = 10*cati_sum;
+    case 5
+        cati_sum = zeros(length(time_model),10);
+    case 6
+        cati_sum = zeros(length(time_model),10);
+    case 7
+        cati_sum = zeros(length(time_model),10);
     case 9
         cati_sum = 5*cati_sum;
     

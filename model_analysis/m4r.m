@@ -6,24 +6,6 @@ function [ModPred,time_model_out, y, cati, ocv, rainfall_day] = m4r(vec1, vec2)
     load '../data/ocv.mat' datespace rv_1d rv_2d eta_1d eta_2d
     load ../data/wash date_list_cati cati_day
 
-    %Fitting Parameters
-%     p.theta= 0.461917696918033;
-%     p.m= 0.142638192515558;
-%     p.D= 3.07782279673481;
-%     p.phi= 0.0672798923855032;
-%     p.rho = 0.0181005343375436;
-%     p.sigma= 0.0224899721499211;
-%     p.muB= 0.13923803667824;
-%     p.beta0= 4.90028234481778;
-%     p.psi = 0.0810493235724724;
-%     p.t0= 922;
-%     p.r = 4.87525005826591e-05;
-% 
-%     p.b1 = 0.0784363677988319;
-%     p.b2 = 0.377221565832508;
-%     p.t1 = 226;
-%     p.t2 = 1238;
-    
     p.theta= vec1(1);
     p.m= vec1(2);
     p.D= vec1(3);
@@ -128,9 +110,6 @@ function [ModPred,time_model_out, y, cati, ocv, rainfall_day] = m4r(vec1, vec2)
             [~,y]=ode45(@eqs,tspan_sub,y0,opt);
             
             for i = 1:10
-%                 if y(end,5+14*(i-1)) < 1e-6
-%                     y(end,5+14*(i-1))=0;
-%                 end
                 if y(end,2+14*(i-1)) < 1
                     y(end,2+14*(i-1))=0;
                 end

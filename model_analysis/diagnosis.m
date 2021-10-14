@@ -1,24 +1,35 @@
-function [Rt, et] = diagnosis(y,washmult,ocvmult)
+function [Rt, et] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, cati_input)
+
+    if (nargin == 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7) 
+        [ocv, ~] = generate_scenario(scenario_ocv, scenario_npi, time_model);
+        cati = cati_input;
+    elseif (nargin ~= 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7)
+        error("NPIs required for this scenario.")
+    else
+        [ocv, cati] = generate_scenario(scenario_ocv, scenario_npi, time_model);
+    end
+
     Rt = zeros(1,size(y,1));
     et = zeros(1,size(y,1));
+
     
     %Fitting Parameters
-    p.theta= 0.461917696918033;
-    p.m= 0.142638192515558;
-    p.D= 3.07782279673481;
-    p.phi= 0.0672798923855032;
-    p.rho = 0.0181005343375436;
-    p.sigma= 0.0224899721499211;
-    p.muB= 0.13923803667824;
-    p.beta0= 4.90028234481778;
-    p.psi = 0.0810493235724724;
-    p.t0= 922;
-    p.r = 4.87525005826591e-05;
+    p.theta= vec1(1);
+    p.m= vec1(2);
+    p.D= vec1(3);
+    p.phi= vec1(4);
+    p.rho = vec1(5);
+    p.sigma= vec1(6);
+    p.muB= vec1(7);
+    p.beta0= vec1(8);
+    p.psi = vec1(9);
+    p.t0= round(vec1(10));
+    p.r = vec1(11);
 
-    p.b1 = 0.0784363677988319;
-    p.b2 = 0.377221565832508;
-    p.t1 = 226;
-    p.t2 = 1238;
+    p.b1 = vec2(1);
+    p.b2 = vec2(2);
+    p.t1 = round(vec2(3));
+    p.t2 = round(vec2(4));
     
     %pre-defined parameters
     p.gamma=0.2;               %rate at which people recover from cholera (day^-1)
@@ -40,7 +51,11 @@ function [Rt, et] = diagnosis(y,washmult,ocvmult)
     
     %set time
     t_initial=datenum('20.10.2010','dd.mm.yyyy');
-    t_final=datenum('01.07.2017','dd.mm.yyyy');
+    if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 ||  scenario_npi == 9
+        t_final=datenum('01.07.2017','dd.mm.yyyy');
+    else
+        t_final=datenum('13.01.2019','dd.mm.yyyy');
+    end
     time_model=t_initial:t_final;
     
     %extract rainfall data
@@ -48,19 +63,8 @@ function [Rt, et] = diagnosis(y,washmult,ocvmult)
     index_rainfall=find(date_list==time_model(1)):find(date_list==time_model(end));
     rainfall_day=rainfall_day(:,index_rainfall);
     
-    %extract ocv data
-    ocv = load('../data/ocv.mat');
-    index_ocv=find(ocv.datespace==time_model(1)):find(ocv.datespace==time_model(end));
-    ocv.rv_1d=ocvmult*ocv.rv_1d(index_ocv,:)';
-    ocv.rv_2d=ocvmult*ocv.rv_2d(index_ocv,:)';
-    ocv.eta_1d=ocv.eta_1d(index_ocv,:)';
-    ocv.eta_2d=ocv.eta_2d(index_ocv,:)';
-    
-    %extract cati data
-    load ../data/wash date_list_cati cati_day
-    index_cati=find(date_list_cati==time_model(1)):find(date_list_cati==time_model(end));
-    cati_sum = cumsum(cati_day,1);
-    cati = double(cati_sum(index_cati,:))*washmult;
+    % SCENARIOS
+    [ocv, cati] = generate_scenario(scenario_ocv, scenario_npi, time_model);
     
     C=y(:,6:14:end)';
     
@@ -157,10 +161,10 @@ function [Rt, et] = diagnosis(y,washmult,ocvmult)
         
         NGM = -TR*inv(SIG);
         Rt(i) = max(real(eig(full(NGM))));
-        
+
         % EPIDEMICITY
         
         et(i) = eigs(HR,1,'largestreal');
-    
+
     end
 end

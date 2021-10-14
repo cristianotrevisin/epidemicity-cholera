@@ -1,29 +1,29 @@
-function [ModPred,time_model_out, y, cati, ocv] = m4s(scenario_ocv, scenario_npi)
+function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_npi, vec1, vec2)
 % MODEL FOR SCENARIO ANALYSIS
 
 
-    load ../data/precipitation rainfall_day date_list
-    load ../data/geodata nnodes POPnodes WS_dept dist_road
-    load '../data/ocv.mat' datespace rv_1d rv_2d eta_1d eta_2d
-    load ../data/wash date_list_cati cati_day
+    in = load("../data/precipitation");
+    rainfall_day = in.rainfall_day; date_list = in.date_list; clear in;
+    in = load("../data/geodata");
+    nnodes = in.nnodes; POPnodes = in.POPnodes; WS_dept = in.WS_dept; dist_road = in.dist_road; clear in;
 
     %Fitting Parameters
-    p.theta= 0.461917696918033;
-    p.m= 0.142638192515558;
-    p.D= 3.07782279673481;
-    p.phi= 0.0672798923855032;
-    p.rho = 0.0181005343375436;
-    p.sigma= 0.0224899721499211;
-    p.muB= 0.13923803667824;
-    p.beta0= 4.90028234481778;
-    p.psi = 0.0810493235724724;
-    p.t0= 922;
-    p.r = 4.87525005826591e-05;
+    p.theta= vec1(1);
+    p.m= vec1(2);
+    p.D= vec1(3);
+    p.phi= vec1(4);
+    p.rho = vec1(5);
+    p.sigma= vec1(6);
+    p.muB= vec1(7);
+    p.beta0= vec1(8);
+    p.psi = vec1(9);
+    p.t0= round(vec1(10));
+    p.r = vec1(11);
 
-    p.b1 = 0.0784363677988319;
-    p.b2 = 0.377221565832508;
-    p.t1 = 226;
-    p.t2 = 1238;
+    p.b1 = vec2(1);
+    p.b2 = vec2(2);
+    p.t1 = round(vec2(3));
+    p.t2 = round(vec2(4));
 
     %pre-defined parameters
     p.gamma=0.2;               %rate at which people recover from cholera (day^-1)
@@ -96,7 +96,7 @@ function [ModPred,time_model_out, y, cati, ocv] = m4s(scenario_ocv, scenario_npi
     
     if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7
             cati = cumsum(cati,1);
-        end
+    end
     
     
     %%% ODE PART
@@ -125,7 +125,6 @@ function [ModPred,time_model_out, y, cati, ocv] = m4s(scenario_ocv, scenario_npi
              
             if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7
             if tspan(iii) >= datenum(2011,11,01)  && tspan(iii) <= datenum(2018,12,25)
-%                 repmat(round((y(end,6:14:end)-y(1,6:14:end))*0.1/7),7,1)
                 cati(iii:iii+step_size-1,:) = real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
             end
             end
@@ -133,16 +132,8 @@ function [ModPred,time_model_out, y, cati, ocv] = m4s(scenario_ocv, scenario_npi
             opt=odeset('RelTol', 1e-2, 'AbsTol', 1e-3);
             [~,y]=ode45(@eqs,tspan_sub,y0,opt);
             
-%             if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7
-%             if tspan(iii) >= datenum(2011,11,01)  && tspan(iii) <= datenum(2018,12,25)
-% %                 repmat(round((y(end,6:14:end)-y(1,6:14:end))*0.1/7),7,1)
-%                 cati(iii+step_size:iii+2*step_size-1,:) = real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
-%             end
-%             end
             for i = 1:10
-%                 if y(end,5+14*(i-1)) < 1e-6
-%                     y(end,5+14*(i-1))=0;
-%                 end
+
                 if y(end,2+14*(i-1)) < 1
                     y(end,2+14*(i-1))=0;
                 end
@@ -205,15 +196,10 @@ function [ModPred,time_model_out, y, cati, ocv] = m4s(scenario_ocv, scenario_npi
                 Ceff = y(6:14:end)-ytop(index_t-p.t0,6:14:end)';
             end
 
-            % EXPONENTIAL
             beta_t = p.beta0*exp(-Ceff./H/p.psi - Yeff1);
             
             theta_t = p.theta*(1+p.phi*rainfall_day(:,index_t)).*exp(-Yeff2);
-            
-            % MONO
-%             beta_t = p.beta0*exp(-Ceff./H/p.psi)./(ones(10,1)+Yeff1);
-%             
-%             theta_t = p.theta*(1+p.phi*rainfall_day(:,index_t))./(ones(10,1)+Yeff2);
+
 
             rv1 = ocv.rv_1d(:,index_t) ./ (y(1:14:end)+y(3:14:end)+y(4:14:end));
             rv2 = zeros(10,1);
