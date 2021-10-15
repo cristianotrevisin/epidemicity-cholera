@@ -100,7 +100,7 @@ title('R2')
 
 
 
-load data/geodata POPnodes WS_dept
+load ../data/geodata POPnodes WS_dept
 POPnodes = POPnodes' * WS_dept;
 POP = POPnodes';
 

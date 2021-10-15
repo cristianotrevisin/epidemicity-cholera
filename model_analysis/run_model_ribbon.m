@@ -13,11 +13,13 @@ opt = "best";
 cases_week = csvread('../data/cases.csv',1,1)';
 cases_week = cases_week(:,1:350); 
 
-[cases_AD1_week0, time, y, cati_sum, ocv, rain] = SIARBV(2, 2. x1,x2);
+[cases_AD1_week0, time, y, cati_sum, ocv] = SIARBV(2, 2, x1,x2);
 [Rt0, et0] = diagnosis(y, 2, 2, x1, x2);
 NS = 1 - sum((cases_AD1_week0(:) - cases_week(:)).^2)/sum((cases_week(:) - mean(cases_week(:))).^2)
 et0 = smoothdata(et0,'movmean',28);
 Rt0 = smoothdata(Rt0,'movmean',28);
+
+
 
 
 nopost = 5;
@@ -35,8 +37,8 @@ for j = 1:nopost
 %     [x3,x4] = get90(opt,rSeq1, rSeq2);
 
     try
-        [cases_AD1_week, ~, y, ~, ] = m4r(x1,x2);
-        [Rt, et] = diagnosis4r(y, x1, x2);
+        [cases_AD1_week, ~, y, ~, ] = SIARBV(2, 2, x1,x2);
+        [Rt, et] = diagnosis(y, 2, 2, x1, x2);
                 
         et = smoothdata(et,'movmean',28);
         Rt = smoothdata(Rt,'movmean',28);
@@ -85,6 +87,12 @@ tick_vec1=[datenum('01.01.2011','dd.mm.yyyy') datenum('01.01.2012','dd.mm.yyyy')
 indexswitchRt = [1 find(diff(sign(Rt0-1)))+1];
 indexswitchet = [1 find(diff(sign(et0)))+1];
 
+in = load("../data/precipitation");
+rainfall_day = in.rainfall_day; date_list = in.date_list; clear in;
+index_rainfall=find(date_list==timed(1)):find(date_list==timed(end));
+rainfall_day=rainfall_day(:,index_rainfall);
+rain = mean(rainfall_day,1);
+
 tickvec = [-0.05, 0, 1, 100];
 f = figure(4002);
 
@@ -99,7 +107,7 @@ f = figure(4002);
         p2 = plot(time,sum(cases_AD1_week0),'-k');
     box off
     ylabel('$\Delta C$', 'fontsize',11, 'interpreter','latex')
-    set(gca,'Xlim',[time(1) time(end)],'Xtick',tick_vec,,'Xticklabel',[])
+    set(gca,'Xlim',[time(1) time(end)],'Xtick',tick_vec,'Xticklabel',[])
     ylim([0 30000])
     box off
     hold off
