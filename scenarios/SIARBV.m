@@ -1,13 +1,25 @@
 function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_npi, vec1, vec2)
-% MODEL FOR SCENARIO ANALYSIS
+% Simulates the model according to a given scenario for vaccination and NPIs.m
+% Takes as arguments:
+%       - scenario_ocv: the scenario for vaccinations (2 for baseline)
+%       - scenario_npi: the scenario for deployment of NPIs (2 for baseline)
+%       - vec1: the set of parameters from the first calibration
+%       - vec2: the set of parameters from the second calibration
+%
+% Yields the following outputs:
+%       - ModPred: the prediction of the model, arranged in a weekly basis (all Saturdays)
+%       - time_model_out: the days where the output of the model is given
+%       - y: the compartments' abundancy, for each day
+%       - cati: the number of NPIs deployed (cumsum)
+%       - ocv: vaccinations
 
-
+    % Load data
     in = load("../data/precipitation");
     rainfall_day = in.rainfall_day; date_list = in.date_list; clear in;
     in = load("../data/geodata");
     nnodes = in.nnodes; POPnodes = in.POPnodes; WS_dept = in.WS_dept; dist_road = in.dist_road; clear in;
 
-    %Fitting Parameters
+    % Fitting parameters
     p.theta= vec1(1);
     p.m= vec1(2);
     p.D= vec1(3);
@@ -25,13 +37,12 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
     p.t1 = round(vec2(3));
     p.t2 = round(vec2(4));
 
-    %pre-defined parameters
+    % Pre-defined parameters
     p.gamma=0.2;               %rate at which people recover from cholera (day^-1)
     p.mu=1/(61.4*365);         %population natality and mortality rate (day^-1)
     p.alpha=-log(0.98)*p.gamma;  %mortality rate due to cholera (day^-1)
     
-    %set time
-    t0=0;                    %delay between the first day of data available and the day of the onset of the epidemic (initial condition)
+    % Set time
     t_initial=datenum('20.10.2010','dd.mm.yyyy');
     if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 || scenario_npi == 8 || scenario_npi == 9
         t_final=datenum('01.07.2017','dd.mm.yyyy');
@@ -40,17 +51,17 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
         t_final=datenum('13.01.2019','dd.mm.yyyy');
         time_data=t_initial+(7-weekday(t_initial))+(0:430-1)*7;
     end
-    time_model=t_initial-t0:t_final;
+    time_model=t_initial:t_final;
 
-    %extract rainfall data
+    % Extract rainfall data
     index_rainfall=find(date_list==time_model(1)):find(date_list==time_model(end));
     rainfall_day=rainfall_day(:,index_rainfall);
    
-    %mobility (gravity model)
+    % Mobility (gravity model)
     fluxes=exp(-dist_road/p.D)*diag(POPnodes);
     fluxes(sub2ind([nnodes nnodes],1:nnodes,1:nnodes))=0;
     fluxes=fluxes./repmat(sum(fluxes,2),1,nnodes);
-    %to dept
+    % to dept
     fluxes=WS_dept'*fluxes*WS_dept;
     fluxes(sub2ind([10 10],1:10,1:10))=0;
     fluxes=fluxes./repmat(sum(fluxes,2),1,10);
@@ -84,9 +95,9 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
     end
 
     cumcases_AD1_week=cumcases_AD1_t(:,index_time);
-    cases_AD1_week=diff([zeros(size(cumcases_AD1_week,1),1) cumcases_AD1_week],1,2); %first column is 0, makes the difference between each element along the row.
+    cases_AD1_week=diff([zeros(size(cumcases_AD1_week,1),1) cumcases_AD1_week],1,2);
     
-    if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 ||  scenario_npi == 8 || scenario_npi == 9
+    if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 || scenario_npi == 9
         ModPred = cases_AD1_week(:,1:350);
         time_model_out = time_data(1:350);
     else
@@ -115,25 +126,24 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
                 tspan_sub = tspan(iii:end);
             end
             
-         if scenario_npi == 5
-             multipl = 0.05;
-         elseif scenario_npi == 6
-             multipl = 0.1;
-         elseif scenario_npi == 7
-             multipl = 0.2;
-         end
+            if scenario_npi == 5
+                multipl = 0.05;
+            elseif scenario_npi == 6
+                multipl = 0.1;
+            elseif scenario_npi == 7
+                multipl = 0.2;
+            end
              
             if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7
-            if tspan(iii) >= datenum(2011,11,01)  && tspan(iii) <= datenum(2018,12,25)
-                cati(iii:iii+step_size-1,:) = real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
-            end
+                if tspan(iii) >= datenum(2011,11,01)  && tspan(iii) <= datenum(2018,12,25)
+                    cati(iii:iii+step_size-1,:) = real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
+                end
             end
             clear y
             opt=odeset('RelTol', 1e-2, 'AbsTol', 1e-3);
             [~,y]=ode45(@eqs,tspan_sub,y0,opt);
             
             for i = 1:10
-
                 if y(end,2+14*(i-1)) < 1
                     y(end,2+14*(i-1))=0;
                 end
@@ -159,9 +169,7 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
             catch
                 ytop(iii:length(tspan),:) = y;
             end
-            y0 = reshape(y(end,:),14,nnodes);
-%             clear y
-            
+            y0 = reshape(y(end,:),14,nnodes);           
         end
         
         cati = cati(1:length(tspan),:);
@@ -223,16 +231,16 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
             dy(6:14:end)=p.sigma.*FI.*(y(1:14:end)+(1-ocv.eta_1d(:,index_t)).*y(7:14:end)+(1-ocv.eta_2d(:,index_t)).*y(11:14:end));   %Cum(I)  
             
 
-            dy(7:14:end)  = rv1.*y(1:14:end)-(FI.*(1-ocv.eta_1d(:,index_t))+p.mu+rv2).*y(7:14:end)+p.rho*y(10:14:end); % V^S_1d
-            dy(8:14:end)  = p.sigma.*FI.*(1-ocv.eta_1d(:,index_t)).*y(7:14:end)-(p.gamma+p.alpha+p.mu)*y(8:14:end); % V^I_1d
-            dy(9:14:end)  = (1-p.sigma).*FI.*(1-ocv.eta_1d(:,index_t)).*y(7:14:end) + rv1.*y(3:14:end) - (p.gamma+p.mu+rv2).*y(9:14:end); % A
-            dy(10:14:end) = rv1.*y(4:14:end)+p.gamma*(y(8:14:end) + y(9:14:end))-(p.mu+p.rho+rv2).*y(10:14:end); % V^R_1d
+            dy(7:14:end)  = rv1.*y(1:14:end)-(FI.*(1-ocv.eta_1d(:,index_t))+p.mu+rv2).*y(7:14:end)+p.rho*y(10:14:end); % S^1
+            dy(8:14:end)  = p.sigma.*FI.*(1-ocv.eta_1d(:,index_t)).*y(7:14:end)-(p.gamma+p.alpha+p.mu)*y(8:14:end); % V^1
+            dy(9:14:end)  = (1-p.sigma).*FI.*(1-ocv.eta_1d(:,index_t)).*y(7:14:end) + rv1.*y(3:14:end) - (p.gamma+p.mu+rv2).*y(9:14:end); % A^1
+            dy(10:14:end) = rv1.*y(4:14:end)+p.gamma*(y(8:14:end) + y(9:14:end))-(p.mu+p.rho+rv2).*y(10:14:end); % R^1
             
             
-            dy(11:14:end) = rv2.*y(7:14:end)-(FI.*(1-ocv.eta_2d(:,index_t))+p.mu).*y(11:14:end)+p.rho*y(14:14:end); % V^S_2d
-            dy(12:14:end) = p.sigma.*FI.*(1-ocv.eta_2d(:,index_t)).*y(11:14:end)-(p.gamma+p.alpha+p.mu)*y(12:14:end); % V^I_2d
-            dy(13:14:end) = (1-p.sigma).*FI.*(1-ocv.eta_2d(:,index_t)).*y(11:14:end)+rv2.*y(9:14:end)-(p.mu+p.gamma).*y(13:14:end); % V^R_2d
-            dy(14:14:end) = rv1.*y(10:14:end)+p.gamma*(y(12:14:end)+y(13:14:end))-(p.mu+p.rho).*y(14:14:end); % V^R_1d
+            dy(11:14:end) = rv2.*y(7:14:end)-(FI.*(1-ocv.eta_2d(:,index_t))+p.mu).*y(11:14:end)+p.rho*y(14:14:end); % S^2
+            dy(12:14:end) = p.sigma.*FI.*(1-ocv.eta_2d(:,index_t)).*y(11:14:end)-(p.gamma+p.alpha+p.mu)*y(12:14:end); % I^2
+            dy(13:14:end) = (1-p.sigma).*FI.*(1-ocv.eta_2d(:,index_t)).*y(11:14:end)+rv2.*y(9:14:end)-(p.mu+p.gamma).*y(13:14:end); % A^2
+            dy(14:14:end) = rv1.*y(10:14:end)+p.gamma*(y(12:14:end)+y(13:14:end))-(p.mu+p.rho).*y(14:14:end); % R^2
 
         end
     end

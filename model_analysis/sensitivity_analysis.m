@@ -6,7 +6,7 @@ clc
 opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
 
-[cases_AD1_week, time] = m4r(x1,x2);
+[cases_AD1_week, time] = SIARBV(2, 2, x1,x2);
 
 baseline = sum(sum(cases_AD1_week));
 

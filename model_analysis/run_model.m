@@ -6,15 +6,16 @@ load ../data/geodata POPnodes WS_dept
 POPnodes = POPnodes' * WS_dept;
 POPnodes = POPnodes';
 
+[rSeq1, rSeq2] = load_data();
+opt = "best";
+[x1,x2] = get50(opt,rSeq1, rSeq2);
 
 
 cases_week = csvread('../data/cases.csv',1,1)';
 cases_week = cases_week(:,1:350); 
-wm=10;
-[cases_AD1_week, time, y] = m5c_washmult(1);
-[Rt, et] = diagnosis(y,1,1);
 
-
+[cases_AD1_week, time, y] = SIARBV(2,2, x1, x2);
+[Rt, et] = diagnosis(y,2,2, x1, x2);
 
 Rt = smoothdata(Rt,'movmean',28);
 et = smoothdata(et,'movmean',28);

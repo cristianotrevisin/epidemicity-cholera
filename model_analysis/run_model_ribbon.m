@@ -13,8 +13,8 @@ opt = "best";
 cases_week = csvread('../data/cases.csv',1,1)';
 cases_week = cases_week(:,1:350); 
 
-[cases_AD1_week0, time, y, cati_sum, ocv, rain] = m4r(x1,x2);
-[Rt0, et0] = diagnosis4r(y, x1, x2);
+[cases_AD1_week0, time, y, cati_sum, ocv, rain] = SIARBV(2, 2. x1,x2);
+[Rt0, et0] = diagnosis(y, 2, 2, x1, x2);
 NS = 1 - sum((cases_AD1_week0(:) - cases_week(:)).^2)/sum((cases_week(:) - mean(cases_week(:))).^2)
 et0 = smoothdata(et0,'movmean',28);
 Rt0 = smoothdata(Rt0,'movmean',28);

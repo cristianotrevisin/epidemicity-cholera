@@ -6,8 +6,8 @@ clc
 opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
 
-[cases_AD1_week, time, y, cati_sum, ocv, rain] = m4r(x1,x2);
-[Rta, eta, rall, eall] = diagnosis4r(y, x1, x2);
+[cases_AD1_week, time, y, cati_sum, ocv, rain] = SIARBV(2, 2, x1,x2);
+[Rta, eta] = diagnosis(y, 2, 2, x1, x2);
 
 et = smoothdata(eta,'movmean',28);
 Rt = smoothdata(Rta,'movmean',28);

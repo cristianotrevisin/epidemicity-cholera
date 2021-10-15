@@ -6,8 +6,11 @@ load ../data/geodata POPnodes WS_dept
 POPnodes = POPnodes' * WS_dept;
 POP = POPnodes;
 
+[rSeq1, rSeq2] = load_data();
+opt = "best";
+[x1,x2] = get50(opt,rSeq1, rSeq2);
 
-[cases_AD1_week, time, y] = m4s(1,2);
+[cases_AD1_week, time, y] = SIARBV(2,2, x1, x2);
 
 figure()
 subplot(3,4,1)
