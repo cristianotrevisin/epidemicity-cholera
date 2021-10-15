@@ -98,28 +98,12 @@ f = figure(4002);
         hold on
         p2 = plot(time,sum(cases_AD1_week0),'-k');
     box off
-    %p2 = plot(time,sum(cases_week),'o','markeredgecolor','red','markerfacecolor','white','markersize',2,'color',[0.5 0.5 0.5],'linewidth', 1);
-    %legend('Observation', 'Simulation','fontsize', 11, 'location','southeast')
     ylabel('$\Delta C$', 'fontsize',11, 'interpreter','latex')
-    set(gca,'Xlim',[time(1) time(end)],'Xtick',tick_vec)
-    set(gca,'Xticklabel',[])
-    %legend boxoff
-    box off
+    set(gca,'Xlim',[time(1) time(end)],'Xtick',tick_vec,,'Xticklabel',[])
     ylim([0 30000])
+    box off
     hold off
 
-%     ax2 = axes('Position',[0.35 0.75 0.5 0.15]);
-%     text(0.95,0.9,'(b)','Units','normalized','FontSize',11)
-%     hold on
-%     jbfill(timed,rib_max_i,rib_min_i,[0.410 0.41 0.41],'white','FaceAlpha',0.35);
-%         hold on
-%         p2 = plot(timed,i0/i0(1),'-k');
-%     ylabel('$\frac{||\bf{y}(t)||}{||\bf{y}(0)||}$', 'fontsize',11, 'Interpreter','latex')
-%     set(gca,'Xlim',[timed(1) timed(end)],'Xtick',tick_vec)   
-%     set(gca,'Xticklabel',[])
-%     ylim([0 20])
-%     hold off
-%     box off
     cati_d = diff([zeros(1,10) ; cati_sum]);
     ax2 = axes('Position',[0.315 0.75 0.5 0.15]);
     text(0.95,0.9,'(b)','Units','normalized','FontSize',11)
