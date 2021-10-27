@@ -19,26 +19,26 @@ opt_npi = 7;
 et = smoothdata(et,'movmean',28);
 Rt = smoothdata(Rt,'movmean',28);
 
-[cases_AD1_week2, time2, y2, cati2, ocv2] = SIARBV(opt_ocv,1,x1,x2);
-[Rt2, et2] = diagnosis(y2,opt_ocv,1,x1,x2, cati2);
+[cases_AD1_week2, time2, y2, cati2, ocv2] = SIARBV(opt_ocv,5,x1,x2);
+[Rt2, et2] = diagnosis(y2,opt_ocv,5,x1,x2, cati2);
 
 et2 = smoothdata(et2,'movmean',28);
 Rt2 = smoothdata(Rt2,'movmean',28);
 
-[cases_AD1_week3, time3, y3, cati3, ocv3] = SIARBV(opt_ocv,5,x1,x2);
-[Rt3, et3] = diagnosis(y3,opt_ocv,5,x1,x2, cati3);
+[cases_AD1_week3, time3, y3, cati3, ocv3] = SIARBV(opt_ocv,6,x1,x2);
+[Rt3, et3] = diagnosis(y3,opt_ocv,6,x1,x2, cati3);
 
 et3 = smoothdata(et3,'movmean',28);
 Rt3 = smoothdata(Rt3,'movmean',28);
 
-[cases_AD1_week4, time4, y4, cati4, ocv4] = SIARBV(opt_ocv,6,x1,x2);
-[Rt4, et4] = diagnosis(y4,opt_ocv,6,x1,x2, cati4);
+[cases_AD1_week4, time4, y4, cati4, ocv4] = SIARBV(opt_ocv,7,x1,x2);
+[Rt4, et4] = diagnosis(y4,opt_ocv,7,x1,x2, cati4);
 
 et4 = smoothdata(et4,'movmean',28);
 Rt4 = smoothdata(Rt4,'movmean',28);
 
-[cases_AD1_week5, time5, y5, cati5, ocv5] = SIARBV(opt_ocv,7,x1,x2);
-[Rt5, et5] = diagnosis(y5,opt_ocv,7,x1,x2, cati5);
+[cases_AD1_week5, time5, y5, cati5, ocv5] = SIARBV(opt_ocv,8,x1,x2);
+[Rt5, et5] = diagnosis(y5,opt_ocv,8,x1,x2, cati5);
 
 et5 = smoothdata(et5,'movmean',28);
 Rt5 = smoothdata(Rt5,'movmean',28);
@@ -81,17 +81,17 @@ f = figure(4002);
     ax2 = axes('Position',[0.315 0.75 0.5 0.15]);
         text(0.95,0.9,'(b)','Units','normalized','FontSize',11)
         hold on
+        b1 = bar(timed,sum(diff([zeros(1,10) ; cati]),2),'k');
+        b1.FaceAlpha = 0.25;
         b5 = bar(timed2,sum(diff([zeros(1,10) ; cati5]),2),'m');
-        b5.FaceAlpha = 0.75;
+        b5.FaceAlpha = 1;
         b4 = bar(timed2,sum(diff([zeros(1,10) ; cati4]),2),'g');
-        b4.FaceAlpha = 0.75;
+        b4.FaceAlpha = 1;
         b3 =  bar(timed2,sum(diff([zeros(1,10) ; cati3]),2),'r');
         b3.FaceAlpha = 0.75;
         b2 = bar(timed2,sum(diff([zeros(1,10) ; cati2]),2),'b');
         b2.FaceAlpha = 0.75;
-        b1 = bar(timed,sum(diff([zeros(1,10) ; cati]),2),'k');
-        b1.FaceAlpha = 0.75;
-        l=legend([b1 b2 b3 b4 b5],'  Baseline', '  No NPI', '  x 0.05', '  x 0.10', '  x 0.20', 'location', 'northwest')
+        l=legend([b1 b2 b3 b4 b5],'  Baseline', '  \zeta = 0.01', '  \zeta = 0.02', '  \zeta = 0.05', '  \zeta = 0.10', 'location', 'northwest')
         h=findobj(l,'type','patch'); 
         set(h,'ydata',[0.,0.5,0.5,0.3,0.3],'xdata',[0.2,0.2,0.4,0.4,0.2]);
         legend boxoff

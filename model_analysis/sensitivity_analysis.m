@@ -12,10 +12,10 @@ baseline = sum(sum(cases_AD1_week));
 
 for i = 1:11
     x1(i) = x1(i)*1.1;
-    [cases_AD1_week] = m4r(x1,x2);
+    [cases_AD1_week] = SIARBV(2, 2, x1,x2);
     up(i) = sum(sum(cases_AD1_week))/baseline-1;
     x1(i) = x1(i)/1.1/1.1;
-    [cases_AD1_week] = m4r(x1,x2);
+    [cases_AD1_week] = SIARBV(2, 2, x1,x2);
     down(i) = sum(sum(cases_AD1_week))/baseline-1;
     x1(i) = x1(i)*1.1;
 end
@@ -23,10 +23,10 @@ end
 for i = 1:4
     i
     x2(i) = x2(i)*1.1;
-    [cases_AD1_week, time] = m4r(x1,x2);
+    [cases_AD1_week, time] = SIARBV(2, 2, x1,x2);
     up(11+i) = sum(sum(cases_AD1_week))/baseline-1;
     x2(i) = x2(i)/1.1/1.1;
-    [cases_AD1_week, time] = m4r(x1,x2);
+    [cases_AD1_week, time] = SIARBV(2, 2, x1,x2);
     down(11+i) = sum(sum(cases_AD1_week))/baseline-1;
     x2(i) = x2(i)*1.1;
 end

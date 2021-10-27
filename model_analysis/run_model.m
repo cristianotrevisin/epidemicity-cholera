@@ -15,6 +15,7 @@ et = smoothdata(et,'movmean',28);
 
 %% PLOT
 cases_week = csvread('../data/cases.csv',1,1)';
+cases_week = cases_week(:,1:350);
 timed = datenum('2010-10-20'):1:datenum('2017-07-01');
 tick_vec=[datenum('01.11.2010','dd.mm.yyyy') datenum('01.11.2011','dd.mm.yyyy') ...
     datenum('01.11.2012','dd.mm.yyyy') datenum('01.11.2013','dd.mm.yyyy') ...

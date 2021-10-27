@@ -55,10 +55,10 @@ function [Rt, et] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, cati_in
     rainfall_day=rainfall_day(:,index_rainfall);
     
     % SCENARIOS
-    if (nargin == 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7) 
+    if (nargin == 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7 || scenario_npi == 8) 
         [ocv, ~] = generate_scenario(scenario_ocv, scenario_npi, time_model);
         cati = cati_input;
-    elseif (nargin ~= 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7)
+    elseif (nargin ~= 6) && (scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7 || scenario_npi == 8)
         error("NPIs required for this scenario.")
     else
         [ocv, cati] = generate_scenario(scenario_ocv, scenario_npi, time_model);

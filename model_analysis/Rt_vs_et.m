@@ -5,15 +5,21 @@ clc
 [rSeq1, rSeq2] = load_data();
 opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
+%%
+[cases_AD1_week, time, y, cati_sum, ocv] = SIARBV(2, 2, x1,x2);
+[Rta, eta,ratio] = diagnosis(y, 2, 2, x1, x2);
 
-[cases_AD1_week, time, y, cati_sum, ocv, rain] = SIARBV(2, 2, x1,x2);
-[Rta, eta] = diagnosis(y, 2, 2, x1, x2);
+% [Rta, eta, ratio] = diagnosis_withBvar(y, 2, 2, x1, x2);
 
 et = smoothdata(eta,'movmean',28);
 Rt = smoothdata(Rta,'movmean',28);
 
 
 %% PLOT
+
+
+cases_week = csvread('../data/cases.csv',1,1)';
+cases_week = cases_week(:,1:350); 
 close all
 timed = datenum('2010-10-20'):1:datenum('2017-07-01');
 tick_vec=[datenum('01.11.2010','dd.mm.yyyy') datenum('01.11.2011','dd.mm.yyyy') ...
@@ -67,6 +73,19 @@ hold off
 f.Units='points';
 f.Position=[0 0 450 400];
 
+fb = figure(9999)
+    hold on
+    plot(timed,1./ratio,'Color', [0 0.4470 0.7410],'Linewidth',0.005)
+    plot(timed,ones(length(timed),1)*mean(1./ratio), 'color','red')
+    set(gca,'Xlim',[timed(1) timed(end)],'Xtick',tick_vec,'fontsize',11)    
+    datetick('x','mmm-yy','keeplimits','keepticks')
+    box off
+    ylabel('$\tau_t/\eta_t = \mathcal{R}_{t,lim}$', 'fontsize',11, 'interpreter','latex')
+    legend('Values','Mean')
+    ylim([0.72 0.74])
+    hold off
+    fb.Units='points';
+    fb.Position=[0 0 450 200];
 
 %%
 x = Rta';
@@ -110,6 +129,6 @@ plot(x,yCalc2,'--')
 legend('Data','Fit','Location','best');
 Rsq2 = 1 - sum((y - yCalc2).^2)/sum((y - mean(y)).^2)
 
-%%
-figure()
-scatter(rall, eall)
+% %%
+% figure()
+% scatter(rall, eall)

@@ -1,4 +1,4 @@
-function [Rt, et] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, cati_input)
+function [Rt, et, ratio] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, cati_input)
 
     Rt = zeros(1,size(y,1));
     et = zeros(1,size(y,1));
@@ -163,6 +163,7 @@ function [Rt, et] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, cati_in
         % EPIDEMICITY
         
         et(i) = eigs(HR,1,'largestreal');
+        ratio(i) = (eigs(0.5*(TR+TR'),1,'largestreal'))/(eigs(TR,1,'largestreal'));
 
     end
 end
