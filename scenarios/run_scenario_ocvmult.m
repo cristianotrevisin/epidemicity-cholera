@@ -48,6 +48,14 @@ et5 = smoothdata(et5,'movmean',28);
 Rt5 = smoothdata(Rt5,'movmean',28);
 
 %% FIND LAST NONZERO
+timed = datenum('2010-10-20'):1:datenum('2017-07-01');
+
+if length(et2)==3008
+    timed2 = datenum('2010-10-20'):1:datenum('2019-01-13');
+else 
+    timed2 = datenum('2010-10-20'):1:datenum('2017-07-01');
+end
+
 cases_AD0_week = sum(cases_AD1_week,1);
 l1 = find(cases_AD0_week,1,'last'); m1 = find(timed==time(l1));
 cases_AD0_week2 = sum(cases_AD1_week2,1);
@@ -69,13 +77,7 @@ c5 = '#578ca9';
 
 %% PLOT
 cases_week = csvread('../data/cases.csv',1,1)'; 
-timed = datenum('2010-10-20'):1:datenum('2017-07-01');
 
-if length(et2)==3008
-    timed2 = datenum('2010-10-20'):1:datenum('2019-01-13');
-else 
-    timed2 = datenum('2010-10-20'):1:datenum('2017-07-01');
-end
 
 tick_vec=[datenum('01.11.2010','dd.mm.yyyy') datenum('01.11.2011','dd.mm.yyyy') ...
     datenum('01.11.2012','dd.mm.yyyy') datenum('01.11.2013','dd.mm.yyyy') ...
@@ -96,7 +98,7 @@ f = figure(4002);
         plot(time3(52:l3),cases_AD0_week3(52:l3),'-','color',c3,'linewidth',0.75);plot(time3(l3),cases_AD0_week3(l3),'+','color',c3,'LineWidth',1.5);
         plot(time4(52:l4),cases_AD0_week4(52:l4),'-','color',c4,'linewidth',0.75);plot(time4(l4),cases_AD0_week4(l4),'+','color',c4,'LineWidth',1.5);
         plot(time5(52:l5),cases_AD0_week5(52:l5),'-','color',c5,'linewidth',0.75);plot(time5(l5),cases_AD0_week5(l5),'+','color',c5,'LineWidth',1.5);
-        ylabel('$\Delta C$', 'fontsize', 11, 'interpreter','latex')
+        ylabel('$D$', 'fontsize', 11, 'interpreter','latex')
         set(gca,'Xlim',[timed(1) timed2(end)],'Xtick',tick_vec,'Xticklabel',[])
         ylim([0 22500])
         box off
