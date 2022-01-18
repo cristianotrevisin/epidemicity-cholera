@@ -93,11 +93,11 @@ f = figure(4002);
     ax1 = axes('Position',[0.1 0.55 0.8 0.35]);
         text(0.95,0.9,'(a)','Units','normalized','FontSize',11)
         hold on
-        plot(time(1:l1),cases_AD0_week(1:l1),'-','color','black','linewidth',0.75); if l1 <350; plot(time(l1),cases_AD0_week(l1),'+k','LineWidth',1.5); end;
-        plot(time2(52:l2),cases_AD0_week2(52:l2),'-','color',c2,'linewidth',0.75); if l2 <350; plot(time2(l2),cases_AD0_week2(l2),'+','color',c2,'LineWidth',1.5); end;
-        plot(time3(52:l3),cases_AD0_week3(52:l3),'-','color',c3,'linewidth',0.75);if l3 <350; plot(time3(l3),cases_AD0_week3(l3),'+','color',c3,'LineWidth',1.5); end;
-        plot(time4(52:l4),cases_AD0_week4(52:l4),'-','color',c4,'linewidth',0.75);if l4 <350; plot(time4(l4),cases_AD0_week4(l4),'+','color',c4,'LineWidth',1.5); end;
-        plot(time5(52:l5),cases_AD0_week5(52:l5),'-','color',c5,'linewidth',0.75);if l5 <350; plot(time5(l5),cases_AD0_week5(l5),'+','color',c5,'LineWidth',1.5); end;
+        plot(time(1:l1),cases_AD0_week(1:l1),'-','color','black','linewidth',0.75); if plot(time(l1),cases_AD0_week(l1),'+k','LineWidth',1.5);
+        plot(time2(52:l2),cases_AD0_week2(52:l2),'-','color',c2,'linewidth',0.75);plot(time2(l2),cases_AD0_week2(l2),'+','color',c2,'LineWidth',1.5);
+        plot(time3(52:l3),cases_AD0_week3(52:l3),'-','color',c3,'linewidth',0.75);plot(time3(l3),cases_AD0_week3(l3),'+','color',c3,'LineWidth',1.5);
+        plot(time4(52:l4),cases_AD0_week4(52:l4),'-','color',c4,'linewidth',0.75);plot(time4(l4),cases_AD0_week4(l4),'+','color',c4,'LineWidth',1.5);
+        plot(time5(52:l5),cases_AD0_week5(52:l5),'-','color',c5,'linewidth',0.75);plot(time5(l5),cases_AD0_week5(l5),'+','color',c5,'LineWidth',1.5);
         ylabel('$D$', 'fontsize', 11, 'interpreter','latex')
         set(gca,'Xlim',[timed(1) timed2(end)],'Xtick',tick_vec,'Xticklabel',[])
         ylim([0 22500])
