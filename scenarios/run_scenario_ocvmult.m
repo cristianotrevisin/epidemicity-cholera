@@ -47,6 +47,26 @@ Rt4 = smoothdata(Rt4,'movmean',28);
 et5 = smoothdata(et5,'movmean',28);
 Rt5 = smoothdata(Rt5,'movmean',28);
 
+%% FIND LAST NONZERO
+cases_AD0_week = sum(cases_AD1_week,1);
+l1 = find(cases_AD0_week,1,'last'); m1 = find(timed==time(l1));
+cases_AD0_week2 = sum(cases_AD1_week2,1);
+l2 = find(cases_AD0_week2,1,'last'); m2 = find(timed2==time(l2));
+cases_AD0_week3 = sum(cases_AD1_week3,1);
+l3 = find(cases_AD0_week3,1,'last'); m3 = find(timed2==time(l3));
+cases_AD0_week4 = sum(cases_AD1_week4,1);
+l4 = find(cases_AD0_week4,1,'last'); m4 = find(timed2==time(l4));
+cases_AD0_week5 = sum(cases_AD1_week5,1);
+l5 = find(cases_AD0_week5,1,'last'); m5 = find(timed2==time(l5));
+l0 = find(time==734791); m0 = find(timed==734791);
+
+%% DEFINE COLOURS
+c1 = 'k';
+c2 = '#88b04b';
+c3 = '#f4512c';
+c4 = '#cfb095';
+c5 = '#578ca9';
+
 %% PLOT
 cases_week = csvread('../data/cases.csv',1,1)'; 
 timed = datenum('2010-10-20'):1:datenum('2017-07-01');
@@ -71,11 +91,11 @@ f = figure(4002);
     ax1 = axes('Position',[0.1 0.55 0.8 0.35]);
         text(0.95,0.9,'(a)','Units','normalized','FontSize',11)
         hold on
-        plot(time,sum(cases_AD1_week),'-k','linewidth',0.75);
-        plot(time2,sum(cases_AD1_week2),'-b','linewidth',0.75);
-        plot(time3,sum(cases_AD1_week3),'-r','linewidth',0.75);
-        plot(time4,sum(cases_AD1_week4),'-g','linewidth',0.75);
-        plot(time5,sum(cases_AD1_week5),'-m','linewidth',0.75);
+        plot(time(1:l1),cases_AD0_week(1:l1),'-','color','black','linewidth',0.75); plot(time(l1),cases_AD0_week(l1),'+k','LineWidth',1.5);
+        plot(time2(52:l2),cases_AD0_week2(52:l2),'-','color',c2,'linewidth',0.75);plot(time2(l2),cases_AD0_week2(l2),'+','color',c2,'LineWidth',1.5);
+        plot(time3(52:l3),cases_AD0_week3(52:l3),'-','color',c3,'linewidth',0.75);plot(time3(l3),cases_AD0_week3(l3),'+','color',c3,'LineWidth',1.5);
+        plot(time4(52:l4),cases_AD0_week4(52:l4),'-','color',c4,'linewidth',0.75);plot(time4(l4),cases_AD0_week4(l4),'+','color',c4,'LineWidth',1.5);
+        plot(time5(52:l5),cases_AD0_week5(52:l5),'-','color',c5,'linewidth',0.75);plot(time5(l5),cases_AD0_week5(l5),'+','color',c5,'LineWidth',1.5);
         ylabel('$\Delta C$', 'fontsize', 11, 'interpreter','latex')
         set(gca,'Xlim',[timed(1) timed2(end)],'Xtick',tick_vec,'Xticklabel',[])
         ylim([0 22500])
@@ -86,10 +106,10 @@ f = figure(4002);
         text(0.95,0.9,'(b)','Units','normalized','FontSize',11)
         hold on
         b1 = stairs(timed,cumsum(sum(ocv.rv_1d,1) + sum(ocv.rv_2d,1)),'k','linewidth',0.75);
-        b2 = stairs(timed2,cumsum(sum(ocv2.rv_1d,1) + sum(ocv2.rv_2d,1)),'b','linewidth',0.75);
-        b3 = stairs(timed2,cumsum(sum(ocv3.rv_1d,1) + sum(ocv3.rv_2d,1)),'r','linewidth',0.75);
-        b4 = stairs(timed2,cumsum(sum(ocv4.rv_1d,1) + sum(ocv4.rv_2d,1)),'g','linewidth',0.75);
-        b5 = stairs(timed2,cumsum(sum(ocv5.rv_1d,1) + sum(ocv5.rv_2d,1)),'m','linewidth',0.75);
+        b2 = stairs(timed2,cumsum(sum(ocv2.rv_1d,1) + sum(ocv2.rv_2d,1)),'color',c2,'linewidth',0.75);
+        b3 = stairs(timed2,cumsum(sum(ocv3.rv_1d,1) + sum(ocv3.rv_2d,1)),'color',c3,'linewidth',0.75);
+        b4 = stairs(timed2,cumsum(sum(ocv4.rv_1d,1) + sum(ocv4.rv_2d,1)),'color',c4,'linewidth',0.75);
+        b5 = stairs(timed2,cumsum(sum(ocv5.rv_1d,1) + sum(ocv5.rv_2d,1)),'color',c5,'linewidth',0.75);
         ylabel('OCV (total)', 'fontsize',11)   
         l=legend([b1 b2 b3 b4 b5],'Baseline', 'No OCV', '95%', '50%', '20%','NumColumns',2);
         legend boxoff
@@ -103,11 +123,11 @@ f = figure(4002);
         text(0.95,0.9,'(c)','Units','normalized','FontSize',11)
         hold on
         plot(timed2,ones(length(timed2),1), 'color', 'red', 'linewidth',0.3)
-        plot(timed,Rt,'-k','linewidth',0.75)
-        plot(timed2,Rt2,'-b','linewidth',0.75)
-        plot(timed2,Rt3,'-r','linewidth',0.75)
-        plot(timed2,Rt4,'-g','linewidth',0.75)
-        plot(timed2,Rt5,'-m','linewidth',0.75)
+        plot(timed(1:m1),Rt(1:m1),'-k','linewidth',0.75); if m1 ~= length(Rt); plot(timed(m1:end),Rt(m1:end),'--k','linewidth',0.5); end
+        plot(timed2(m0:m2),Rt2(m0:m2),'-','color',c2,'linewidth',0.75); if m2 ~= length(Rt2); plot(timed2(m2:end),Rt2(m2:end),'--','color',c2,'linewidth',0.5); end
+        plot(timed2(m0:m3),Rt3(m0:m3),'-','color',c3,'linewidth',0.75); if m3 ~= length(Rt3); plot(timed2(m3:end),Rt3(m3:end),'--','color',c3,'linewidth',0.5); end
+        plot(timed2(m0:m4),Rt4(m0:m4),'-','color',c4,'linewidth',0.75); if m4 ~= length(Rt4); plot(timed2(m4:end),Rt4(m4:end),'--','color',c4,'linewidth',0.5); end
+        plot(timed2(m0:m5),Rt5(m0:m5),'-','color',c5,'linewidth',0.75); if m5 ~= length(Rt5); plot(timed2(m5:end),Rt5(m5:end),'--','color',c5,'linewidth',0.5); end
         ylabel('$\mathcal{R}_t$', 'fontsize',11, 'interpreter','latex')
         set(gca,'Xlim',[timed(1) timed2(end)],'Xtick',tick_vec,'Xticklabel',[])
         hold off
@@ -116,12 +136,11 @@ f = figure(4002);
     ax4 = axes('Position',[0.1 0.1 0.8 0.175]);
         text(0.95,0.9,'(d)','Units','normalized','FontSize',11)
         hold on
-        plot(timed,et,'-k','linewidth',0.75)
-        plot(timed2,zeros(length(timed2),1), 'color', 'red', 'linewidth',0.3)
-        plot(timed2,et2,'b','linewidth',0.75)
-        plot(timed2,et3,'r','linewidth',0.75)
-        plot(timed2,et4,'g','linewidth',0.75)
-        plot(timed2,et5,'m','linewidth',0.75)
+        plot(timed(1:m1),et(1:m1),'-k','linewidth',0.75); if m1 ~= length(et); plot(timed(m1:end),et(m1:end),'--k','linewidth',0.5); end
+        plot(timed2(m0:m2),et2(m0:m2),'-','color',c2,'linewidth',0.75); if m2 ~= length(et2); plot(timed2(m2:end),et2(m2:end),'--','color',c2,'linewidth',0.5); end
+        plot(timed2(m0:m3),et3(m0:m3),'-','color',c3,'linewidth',0.75); if m3 ~= length(et3); plot(timed2(m3:end),et3(m3:end),'--','color',c3,'linewidth',0.5); end
+        plot(timed2(m0:m4),et4(m0:m4),'-','color',c4,'linewidth',0.75); if m4 ~= length(et4); plot(timed2(m4:end),et4(m4:end),'--','color',c4,'linewidth',0.5); end
+        plot(timed2(m0:m5),et5(m0:m5),'-','color',c5,'linewidth',0.75); if m5 ~= length(et5); plot(timed2(m5:end),et5(m5:end),'--','color',c5,'linewidth',0.5); end
         ylabel('$e_t$ [1/d]', 'fontsize',11, 'interpreter','latex')  
         set(gca,'Xlim',[timed(1) timed2(end)],'Xtick',tick_vec)
         datetick('x','mmm-yy','keeplimits','keepticks')

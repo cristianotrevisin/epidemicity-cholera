@@ -10,7 +10,7 @@ cases_week = cases_week(:,1:350);
 opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
 
-[cases_AD1_week0, time] = m4r(x1,x2);
+[cases_AD1_week0, time] = SIARBV(2,2,x1,x2);
 
 [p1,p2] = get50("95pct",rSeq1, rSeq2);
 nopost = 100;
@@ -21,7 +21,7 @@ for i = 1:nopost
     i
     [x1,x2] = get50(opt,rSeq1, rSeq2);  
     try
-        [cases_AD1_week,time] = m4r(x1,x2);
+        [cases_AD1_week,time] = SIARBV(2,2,x1,x2);
     catch
         cases_AD1_week = NaN(10,350);
     end

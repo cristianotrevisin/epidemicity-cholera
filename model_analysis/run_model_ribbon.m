@@ -13,7 +13,7 @@ opt = "best";
 cases_week = csvread('../data/cases.csv',1,1)';
 cases_week = cases_week(:,1:350); 
 
-[cases_AD1_week0, time, y, cati_sum, ocv] = SIARBV(2, 2, x1,x2);
+[cases_AD1_week0, time, y, cati, ocv] = SIARBV(2, 2, x1,x2);
 [Rt0, et0] = diagnosis(y, 2, 2, x1, x2);
 NS = 1 - sum((cases_AD1_week0(:) - cases_week(:)).^2)/sum((cases_week(:) - mean(cases_week(:))).^2)
 et0 = smoothdata(et0,'movmean',28);
@@ -22,7 +22,7 @@ Rt0 = smoothdata(Rt0,'movmean',28);
 
 
 
-nopost = 5;
+nopost = 250;
    
 ribbon1cases = zeros(nopost,350);
 ribbon1norm = zeros(nopost,length(et0));
@@ -106,18 +106,18 @@ f = figure(4002);
         hold on
         p2 = plot(time,sum(cases_AD1_week0),'-k');
     box off
-    ylabel('$\Delta C$', 'fontsize',11, 'interpreter','latex')
+    ylabel('$D$', 'fontsize',11, 'interpreter','latex')
     set(gca,'Xlim',[time(1) time(end)],'Xtick',tick_vec,'Xticklabel',[])
     ylim([0 30000])
     box off
     hold off
 
-    cati_d = diff([zeros(1,10) ; cati_sum]);
+  
     ax2 = axes('Position',[0.315 0.75 0.5 0.15]);
     text(0.95,0.9,'(b)','Units','normalized','FontSize',11)
     yyaxis left
     hold on
-    bar(timed, cati_d, 'stacked')
+    bar(timed, cati, 'stacked')
     ylabel('Weekly NPI')
     set(gca,'Xlim',[timed(1) timed(end)],'Xtick',tick_vec1)   
     datetick('x','yyyy','keeplimits','keepticks')

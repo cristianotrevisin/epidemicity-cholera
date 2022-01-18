@@ -29,7 +29,7 @@ MCMCPar.n2 = size(Sequences,2)-2;
 clear Sequences output index0 index1 index2
 
 titlestr1 = ["\theta", "m", "D", "\phi", "\rho", "\sigma", "\mu_B", "\beta_0", "\psi", "t_0", "r"];
-titlestr2 = ["\xi_1", "\xi_2", "t_1", "t_2"];
+titlestr2 = ["\xi_1", "\xi_2", "t_w"];
 
 %% MARKOV CHAIN PLOT
 f = figure(2222)
