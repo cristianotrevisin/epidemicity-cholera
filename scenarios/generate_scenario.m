@@ -227,6 +227,8 @@ switch scenario_npi
         cati = zeros(length(time_model),10);
     case 7
         cati = zeros(length(time_model),10);
+    case 8
+        cati = zeros(length(time_model),10);
     case 9
         cati = 5*cati;
     

@@ -57,15 +57,15 @@ else
 end
 
 cases_AD0_week = sum(cases_AD1_week,1);
-l1 = find(cases_AD0_week,1,'last'); m1 = find(timed==time(l1));
+l1 = find(cases_AD0_week>=1,1,'last'); m1 = find(timed==time(l1));
 cases_AD0_week2 = sum(cases_AD1_week2,1);
-l2 = find(cases_AD0_week2,1,'last'); m2 = find(timed2==time(l2));
+l2 = find(cases_AD0_week2>=1,1,'last'); m2 = find(timed2==time(l2));
 cases_AD0_week3 = sum(cases_AD1_week3,1);
-l3 = find(cases_AD0_week3,1,'last'); m3 = find(timed2==time(l3));
+l3 = find(cases_AD0_week3>=1,1,'last'); m3 = find(timed2==time(l3));
 cases_AD0_week4 = sum(cases_AD1_week4,1);
-l4 = find(cases_AD0_week4,1,'last'); m4 = find(timed2==time(l4));
+l4 = find(cases_AD0_week4>=1,1,'last'); m4 = find(timed2==time(l4));
 cases_AD0_week5 = sum(cases_AD1_week5,1);
-l5 = find(cases_AD0_week5,1,'last'); m5 = find(timed2==time(l5));
+l5 = find(cases_AD0_week5>=1,1,'last'); m5 = find(timed2==time(l5));
 l0 = find(time==734791); m0 = find(timed==734791);
 
 %% DEFINE COLOURS
@@ -138,6 +138,7 @@ f = figure(4002);
     ax4 = axes('Position',[0.1 0.1 0.8 0.175]);
         text(0.95,0.9,'(d)','Units','normalized','FontSize',11)
         hold on
+        plot(timed2,zeros(length(timed2),1), 'color', 'red', 'linewidth',0.3)
         plot(timed(1:m1),et(1:m1),'-k','linewidth',0.75); if m1 ~= length(et); plot(timed(m1:end),et(m1:end),'--k','linewidth',0.5); end
         plot(timed2(m0:m2),et2(m0:m2),'-','color',c2,'linewidth',0.75); if m2 ~= length(et2); plot(timed2(m2:end),et2(m2:end),'--','color',c2,'linewidth',0.5); end
         plot(timed2(m0:m3),et3(m0:m3),'-','color',c3,'linewidth',0.75); if m3 ~= length(et3); plot(timed2(m3:end),et3(m3:end),'--','color',c3,'linewidth',0.5); end
