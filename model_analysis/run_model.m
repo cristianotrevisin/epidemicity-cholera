@@ -7,11 +7,34 @@ opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
 
 
-[cases_AD1_week, time, y] = SIARBV(2,2,x1,x2);
+[cases_AD1_week, time, y] = SIARBV(x1,x2, 2, 2);
 [Rt, et] = diagnosis(y,2,2,x1, x2);
 
 Rt = smoothdata(Rt,'movmean',28);
 et = smoothdata(et,'movmean',28);
+
+%%
+figure()
+subplot(2,2,1)
+hold on
+for i = 1:10
+plot(s1(i,:))
+end
+subplot(2,2,2)
+hold on
+for i = 1:10
+plot(s2(i,:))
+end
+subplot(2,2,3)
+hold on
+for i = 1:10
+plot((s1(i,:)).^x2(1))
+end
+subplot(2,2,4)
+hold on
+for i = 1:10
+plot((s2(i,:)).^x2(2))
+end
 
 %% PLOT
 cases_week = csvread('../data/cases.csv',1,1)';

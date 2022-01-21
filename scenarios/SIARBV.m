@@ -34,8 +34,7 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
 
     p.b1 = vec2(1);
     p.b2 = vec2(2);
-    p.t1 = round(vec2(3));
-    p.t2 = round(vec2(4));
+    p.tw = round(vec2(3));
 
     % Pre-defined parameters
     p.gamma=0.2;               %rate at which people recover from cholera (day^-1)
@@ -95,7 +94,7 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
     end
 
     cumcases_AD1_week=cumcases_AD1_t(:,index_time);
-    cases_AD1_week=real(diff([zeros(size(cumcases_AD1_week,1),1) cumcases_AD1_week],1,2));
+    cases_AD1_week=diff([zeros(size(cumcases_AD1_week,1),1) cumcases_AD1_week],1,2);
     
     if scenario_npi == 2 || scenario_npi == 3 ||  scenario_npi == 4 || scenario_npi == 9
         ModPred = cases_AD1_week(:,1:350);
@@ -104,18 +103,13 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
         ModPred = cases_AD1_week(:,1:430);
         time_model_out = time_data(1:430);
     end
-    
-
-    
-    
+        
     %%% ODE PART
     
     function [ytop,cati]=SIB(p,nnodes,H,fluxes,rainfall_day,cati,ocv,tspan,y0,scenario_npi)
 
         step_size = 7;
-        if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7
-            cati = zeros(length(tspan),10);
-        end
+        
         for iii = 1:step_size:length(tspan)
             try
                 tspan_sub = tspan(iii:iii+step_size);
@@ -134,13 +128,12 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
                 multipl = 0.1;
             end
              
-            if scenario_npi == 5 || scenario_npi == 6 ||scenario_npi == 7 ||scenario_npi == 8
+            if scenario_npi == 5 || scenario_npi == 6 || scenario_npi == 7 || scenario_npi == 8
                 if tspan(iii) >= datenum(2011,11,01)  && tspan(iii) <= datenum(2018,12,25)
-                    cati(iii:iii+step_size-1,:) = cati(iii-step_size:iii-1,:) + real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
+                    cati(iii:iii+step_size-1,:) = real(repmat(round((y(end,6:14:end)-y(1,6:14:end))*multipl/7),7,1));
                 end
             end
             clear y
-            
             opt=odeset('RelTol', 1e-2, 'AbsTol', 1e-3);
             [~,y]=ode45(@eqs,tspan_sub,y0,opt);
             
@@ -163,9 +156,6 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
                 if y(end,13+14*(i-1)) < 1
                     y(end,13+14*(i-1))=0;
                 end
-                if y(end,5+14*(i-1)) < 0
-                    y(end,5+14*(i-1))=0;
-                end
             end
 
             try
@@ -175,8 +165,6 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
             end
             y0 = reshape(y(end,:),14,nnodes);           
         end
-        
-        cati = cati(1:length(tspan),:);
 
         function dy=eqs(t,y)
             index_t=floor(t-tspan(1))+1;
@@ -185,22 +173,20 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
 
             temp=fluxes*(y(5:14:end)./(y(5:14:end)+1));      
             
-            if index_t-p.t1 < 0
-                keff1 = index_t;
-            else
-                keff1 = p.t1;
-            end
+            weight = 1 - (index_t-(1:size(cati,1)))/p.tw;
+        
+            weight(weight<0) = 0; weight(weight>1) = 0;
+            weight = weight';
+            weight = repmat(weight,1,10);
+
+            catix = cati.*weight;
             
-            Yeff1 = ((cati(index_t,:) - cati(index_t - keff1 +1,:))'./H).^p.b1;
-            
-            if index_t-p.t2 < 0
-                keff2 = index_t;
-            else
-                keff2 = p.t2;
-            end
-            
-            Yeff2 = ((cati(index_t,:) - cati(index_t - keff2 +1,:))'./H).^p.b2;
-            
+            sum_weighted = sum(catix,1)'./H;
+        
+            Yeff1 = sum_weighted.^p.b1;
+            Yeff2 = sum_weighted.^p.b2;
+
+
             
             if index_t<p.t0+1
                 Ceff = y(6:14:end);
@@ -213,13 +199,13 @@ function [ModPred,time_model_out, y, cati, ocv] = SIARBV(scenario_ocv, scenario_
             theta_t = p.theta*(1+p.phi*rainfall_day(:,index_t)).*exp(-Yeff2);
 
 
-            rv1 = real(ocv.rv_1d(:,index_t) ./ (y(1:14:end)+y(3:14:end)+y(4:14:end)));
+            rv1 = ocv.rv_1d(:,index_t) ./ (y(1:14:end)+y(3:14:end)+y(4:14:end));
             rv2 = zeros(10,1);
             for i = 1:10
                 if y(7+14*(i-1))+y(9+14*(i-1))+y(10+14*(i-1)) < 1
                     rv2(i) = 0;
                 else
-                    rv2(i) = real(ocv.rv_2d(i,index_t) ./ (y(7+14*(i-1))+y(9+14*(i-1))+y(10+14*(i-1))));
+                    rv2(i) = ocv.rv_2d(i,index_t) ./ (y(7+14*(i-1))+y(9+14*(i-1))+y(10+14*(i-1)));
                 end
             end
             

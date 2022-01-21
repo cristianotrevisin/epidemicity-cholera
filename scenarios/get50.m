@@ -29,7 +29,7 @@ function [x1,x2] = get95(opt,rSeq1, rSeq2)
 %         set(gca,'xlim',[0 size(Seq1,1)*1.2])
 %         set(gca,'fontsize',12)
 %     end
-tail2 = 25000*3;
+tail2 = 20000*3;
 
     tail1 = 1000000*3;
 

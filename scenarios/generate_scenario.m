@@ -1,4 +1,4 @@
-function [ocv, cati_sum] = generate_scenario(scenario_ocv, scenario_npi, time_model)
+function [ocv, cati] = generate_scenario(scenario_ocv, scenario_npi, time_model)
 
 load ../data/geodata POPnodes WS_dept
 POPnodes = POPnodes' * WS_dept;
@@ -207,31 +207,30 @@ end
         load ../data/wash date_list_cati cati_day
         date_list_cati = double(date_list_cati)';
         index_cati=find(date_list_cati==time_model(1)):find(date_list_cati==time_model(end));
-        cati_sum = cumsum(cati_day,1);
-        cati_sum = double(cati_sum(index_cati,:));
+        cati = double(cati_day(index_cati,:));
     end
 
     cases_week = csvread('../data/cases.csv',1,1)'; 
 
 switch scenario_npi
     case 1
-        cati_sum = zeros(length(time_model),10);
+        cati = zeros(length(time_model),10);
     case 2
-        cati_sum = cati_sum;
+        cati = cati;
     case 3
-        cati_sum = 2*cati_sum;
+        cati = 2*cati;
     case 4
-        cati_sum = 10*cati_sum;
+        cati = 10*cati;
     case 5
-        cati_sum = zeros(length(time_model),10);
+        cati = zeros(length(time_model),10);
     case 6
-        cati_sum = zeros(length(time_model),10);
+        cati = zeros(length(time_model),10);
     case 7
-        cati_sum = zeros(length(time_model),10);
+        cati = zeros(length(time_model),10);
     case 8
-        cati_sum = zeros(length(time_model),10);
+        cati = zeros(length(time_model),10);
     case 9
-        cati_sum = 5*cati_sum;
+        cati = 5*cati;
     
 end
 end

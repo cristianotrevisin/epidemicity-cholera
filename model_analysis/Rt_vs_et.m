@@ -6,7 +6,7 @@ clc
 opt = "best";
 [x1,x2] = get50(opt,rSeq1, rSeq2);
 %%
-[cases_AD1_week, time, y, cati_sum, ocv] = SIARBV(2, 2, x1,x2);
+[cases_AD1_week, time, y, cati, ocv] = SIARBV(2, 2, x1,x2);
 [Rta, eta,ratio] = diagnosis(y, 2, 2, x1, x2);
 
 % [Rta, eta, ratio] = diagnosis_withBvar(y, 2, 2, x1, x2);

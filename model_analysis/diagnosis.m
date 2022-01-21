@@ -19,8 +19,7 @@ function [Rt, et, ratio] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, 
 
     p.b1 = vec2(1);
     p.b2 = vec2(2);
-    p.t1 = round(vec2(3));
-    p.t2 = round(vec2(4));
+    p.tw = round(vec2(3));
     
     %pre-defined parameters
     p.gamma=0.2;               %rate at which people recover from cholera (day^-1)
@@ -93,21 +92,20 @@ function [Rt, et, ratio] = diagnosis(y, scenario_ocv, scenario_npi, vec1, vec2, 
         A2 = p.r*((1-p.m)*y(i,13:14:end)' + p.m*fluxes'*y(i,13:14:end)');
     
         % Loading NPI
-        if i-p.t1 < 0
-            keff1 = i;
-        else
-            keff1 = p.t1;
-        end
-         
-        Yeff1 = ((cati(i,:) - cati(i - keff1 +1,:))'./POPnodes).^p.b1;
+        weight = 1 - (i-(1:size(cati,1)))/p.tw;
         
-        if i-p.t2 < 0
-            keff2 = i;
-        else
-            keff2 = p.t2;
-        end
+        weight(weight<0) = 0; weight(weight>1) = 0;
+        weight = weight';
+        weight = repmat(weight,1,10);
+
+        catix = cati.*weight;
+
+        sum_weighted = sum(catix,1)'./POPnodes;
+
+        Yeff1 = sum_weighted.^p.b1;
+        Yeff2 = sum_weighted.^p.b2;
         
-        Yeff2 = ((cati(i,:) - cati(i - keff2 +1,:))'./POPnodes).^p.b2;
+        
         
         % Loading PPV
         if i<p.t0+1

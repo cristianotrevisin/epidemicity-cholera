@@ -23,7 +23,7 @@ function [rSeq1, rSeq2] = load_data();
     clear Sequences index0 index1
 
 
-    tail2 = 25000*3;
+    tail2 = 20000*3;
 
     tail1 = 1000000*3;
 
