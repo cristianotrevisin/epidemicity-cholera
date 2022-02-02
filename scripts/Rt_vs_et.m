@@ -17,6 +17,11 @@ Rt = smoothdata(Rta,'movmean',28);
 
 
 %% PLOT RATIO
+timed = datenum('2010-10-20'):1:datenum('2017-07-01');
+tick_vec=[datenum('01.11.2010','dd.mm.yyyy') datenum('01.11.2011','dd.mm.yyyy') ...
+    datenum('01.11.2012','dd.mm.yyyy') datenum('01.11.2013','dd.mm.yyyy') ...
+    datenum('01.11.2014','dd.mm.yyyy') datenum('01.11.2015','dd.mm.yyyy')...
+    datenum('01.11.2016','dd.mm.yyyy')];
 
 fb = figure(9999)
     hold on
