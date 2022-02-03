@@ -114,7 +114,7 @@ f = figure(4002);
         yyaxis left
         hold on
         bar(timed, cati, 'stacked')
-        ylabel('Weekly NPI')
+        ylabel('Daily NPIs')
         set(gca,'Xlim',[timed(1) timed(end)],'Xtick',tick_vec1)   
         datetick('x','yyyy','keeplimits','keepticks')
         yyaxis right
